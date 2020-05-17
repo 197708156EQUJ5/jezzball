@@ -76,6 +76,10 @@ void ObjectManager::update()
                 {
                     wall.y -= 1;
                 }
+                if (wall.y + wall.height > this->screenHeight - 2)
+                {
+                    wall.y -= 1;
+                }
                 wall.height += 2;
             }
             else
@@ -87,6 +91,10 @@ void ObjectManager::update()
                     break;
                 }
                 if (wall.x > 0)
+                {
+                    wall.x -= 1;
+                }
+                if (wall.x + wall.width > this->screenWidth - 2)
                 {
                     wall.x -= 1;
                 }

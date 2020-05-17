@@ -106,10 +106,6 @@ void Board::gameLoop()
                     break;
                 case SDL_MOUSEBUTTONUP:
                 {
-                    if (cursor != nullptr)
-                    {
-                        SDL_FreeCursor(cursor);
-                    }
                     mousePressed(e.button);
                     break;
                 }
@@ -161,6 +157,10 @@ void Board::mousePressed(SDL_MouseButtonEvent& b)
     }
     else if (b.button == SDL_BUTTON_RIGHT)
     {
+        if (cursor != nullptr)
+        {
+            SDL_FreeCursor(cursor);
+        }
         if (this->isCursorVertical)
         {
             cursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_SIZEWE);

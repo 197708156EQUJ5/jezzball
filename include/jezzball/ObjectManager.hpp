@@ -2,6 +2,7 @@
 
 #include "jezzball/Atom.hpp"
 #include "jezzball/LTexture.hpp"
+#include "jezzball/Wall.hpp"
 
 #include <vector>
 #include <memory>
@@ -13,20 +14,24 @@ class ObjectManager
 {
 public:
 
-    ObjectManager(uint32_t screenWidth, uint32_t screenHeight, LTexture &lTexture);
+    ObjectManager(int screenWidth, int screenHeight, LTexture &lTexture);
     ~ObjectManager() = default;
 
     void addAtom();
+    void addWall(int x, int y, bool isCursorVertical);
     void update();
     void render();
+    std::vector<Wall> getWalls();
 
 private:
 
-    uint32_t screenWidth;
-    uint32_t screenHeight;
+    int screenWidth;
+    int screenHeight;
+    bool isCursorVertical;
+    bool isAWallBuilding;
     LTexture lTexture;
     std::vector<Atom> atoms;
-    std::shared_ptr<Atom> atom;
+    std::vector<Wall> walls;
 };
 
 } // namespace jezzball

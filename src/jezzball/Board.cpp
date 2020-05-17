@@ -10,6 +10,8 @@ namespace jezzball
 {
 
 Board::Board() :
+    isCursorVertical(true),
+    cursor(nullptr),
     window(nullptr),
     renderer(nullptr)
 {
@@ -64,6 +66,8 @@ bool Board::init()
                     success = false;
                 }
             }
+            cursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_SIZENS);
+            SDL_SetCursor(cursor);
         }
     }
     
@@ -85,23 +89,46 @@ void Board::gameLoop()
     this->objectManager = std::make_unique<ObjectManager>(SCREEN_WIDTH, SCREEN_HEIGHT, atomTexture);
     this->objectManager->addAtom();
     this->objectManager->addAtom();
-    
+
     while(!quit)
     {
+        SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0x00);
+        SDL_RenderClear(renderer);
+        
         //Handle events on queue
         while(SDL_PollEvent(&e) != 0)
         {
             //User requests quit
-            if(e.type == SDL_QUIT)
+            switch (e.type)
             {
-                quit = true;
+                case SDL_QUIT:
+                    quit = true;
+                    break;
+                case SDL_MOUSEBUTTONUP:
+                {
+                    if (cursor != nullptr)
+                    {
+                        SDL_FreeCursor(cursor);
+                    }
+                    mousePressed(e.button);
+                    break;
+                }
             }
         }
         
         this->objectManager->update();
         
-        SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0x00);
-        SDL_RenderClear(renderer);
+        for (Wall wall : this->objectManager->getWalls())
+        {
+            SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0x00, 0xFF);
+            SDL_Rect wallRect;
+            wallRect.x = wall.x;
+            wallRect.y = wall.y;
+            wallRect.w = wall.width;
+            wallRect.h = wall.height;
+
+            SDL_RenderDrawRect(renderer, &wallRect);
+        }
 
         this->objectManager->render();
 
@@ -123,6 +150,30 @@ bool Board::loadMedia()
     }
 
     return success;
+}
+
+void Board::mousePressed(SDL_MouseButtonEvent& b)
+{
+    if (b.button == SDL_BUTTON_LEFT)
+    {
+        SDL_Log("Left button clicked! loc: %d, %d", b.x, b.y);
+        this->objectManager->addWall(b.x, b.y, isCursorVertical);
+    }
+    else if (b.button == SDL_BUTTON_RIGHT)
+    {
+        if (this->isCursorVertical)
+        {
+            cursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_SIZEWE);
+            SDL_SetCursor(cursor);
+            this->isCursorVertical = false;
+        }
+        else
+        {
+            cursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_SIZENS);
+            SDL_SetCursor(cursor);
+            this->isCursorVertical = true;
+        }
+    }
 }
 
 void Board::close()

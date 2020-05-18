@@ -16,6 +16,7 @@ ObjectManager::ObjectManager(int screenWidth, int screenHeight, LTexture &lTextu
     isAWallBuilding(false),
     lTexture(lTexture)
 {
+    this->areas.push_back(Area{0, 2, 2, screenWidth, screenHeight});
 }
 
 void ObjectManager::addAtom()
@@ -42,21 +43,27 @@ void ObjectManager::update()
     {
         atom.move();
         Point p = atom.getPoint();
-        if (p.x < 2)
+        for (Area area : this->areas)
         {
-            atom.changeDirection(CollisionDirection::WEST);
-        }
-        else if (p.x > screenWidth - 20)
-        {
-            atom.changeDirection(CollisionDirection::EAST);
-        }
-        else if (p.y < 2)
-        {
-            atom.changeDirection(CollisionDirection::NORTH);
-        }
-        else if (p.y > screenHeight - 20)
-        {
-            atom.changeDirection(CollisionDirection::SOUTH);
+            if (atom.getAreaIndex() == area.index)
+            {
+                if (p.x < area.x)
+                {
+                    atom.changeDirection(CollisionDirection::WEST);
+                }
+                else if (p.x + 20 > area.width)
+                {
+                    atom.changeDirection(CollisionDirection::EAST);
+                }
+                else if (p.y < area.y)
+                {
+                    atom.changeDirection(CollisionDirection::NORTH);
+                }
+                else if (p.y + 20 > area.height)
+                {
+                    atom.changeDirection(CollisionDirection::SOUTH);
+                }
+            }
         }
     }
 

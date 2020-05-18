@@ -15,15 +15,12 @@ public:
     
     Atom(Point point);
     ~Atom() = default;
-    //Atom(const Atom &other) = delete;
-    //Atom(Atom &&other) = delete;
-    //Atom& operator=(const Atom &other) = delete;
-    //Atom& operator=(Atom &other) = delete;
 
     void move();
     Direction getDirection();
     void changeDirection(CollisionDirection collisionDirection);
     Point getPoint();
+    int getAreaIndex();
 
 private:
 
@@ -32,6 +29,7 @@ private:
 
     Direction direction;
     Point point;
+    int areaIndex;
 };
 
 } // namespace jezzball

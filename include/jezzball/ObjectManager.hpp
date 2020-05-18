@@ -1,6 +1,7 @@
 #pragma once
 
 #include "jezzball/Atom.hpp"
+#include "jezzball/Area.hpp"
 #include "jezzball/LTexture.hpp"
 #include "jezzball/Wall.hpp"
 
@@ -32,6 +33,7 @@ private:
     LTexture lTexture;
     std::vector<Atom> atoms;
     std::vector<Wall> walls;
+    std::vector<Area> areas;
 };
 
 } // namespace jezzball

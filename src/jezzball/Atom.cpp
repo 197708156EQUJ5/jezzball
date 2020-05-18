@@ -7,13 +7,19 @@ namespace jezzball
 
 Atom::Atom(Point point) : 
     direction(Direction::SOUTH_EAST), 
-    point(point)
+    point(point),
+    areaIndex(0)
 {
 }
 
 Point Atom::getPoint()
 {
     return point;
+}
+
+int Atom::getAreaIndex()
+{
+    return areaIndex;
 }
 
 void Atom::move()

@@ -23,13 +23,17 @@ public:
     void update();
     void render();
     std::vector<Wall> getWalls();
+    void splitArea(Wall wall);
 
 private:
+    
+    void reassignAtoms();
 
     int screenWidth;
     int screenHeight;
     bool isCursorVertical;
     bool isAWallBuilding;
+    int areaIndex;
     LTexture lTexture;
     std::vector<Atom> atoms;
     std::vector<Wall> walls;

@@ -21,11 +21,11 @@ public:
     void changeDirection(CollisionDirection collisionDirection);
     Point getPoint();
     int getAreaIndex();
+    void setAreaIndex(int areaIndex);
 
+    static const uint32_t RADIUS = 20;
+    
 private:
-
-    static const uint32_t WIDTH = 20;
-    static const uint32_t HEIGHT = 20;
 
     Direction direction;
     Point point;

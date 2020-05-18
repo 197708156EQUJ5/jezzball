@@ -102,8 +102,10 @@ void Board::gameLoop()
             switch (e.type)
             {
                 case SDL_QUIT:
+                {
                     quit = true;
                     break;
+                }
                 case SDL_MOUSEBUTTONUP:
                 {
                     mousePressed(e.button);
@@ -152,7 +154,7 @@ void Board::mousePressed(SDL_MouseButtonEvent& b)
 {
     if (b.button == SDL_BUTTON_LEFT)
     {
-        SDL_Log("Left button clicked! loc: %d, %d", b.x, b.y);
+        //SDL_Log("Left button clicked! loc: %d, %d", b.x, b.y);
         this->objectManager->addWall(b.x, b.y, isCursorVertical);
     }
     else if (b.button == SDL_BUTTON_RIGHT)

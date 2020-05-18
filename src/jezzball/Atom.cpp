@@ -22,6 +22,11 @@ int Atom::getAreaIndex()
     return areaIndex;
 }
 
+void Atom::setAreaIndex(int areaIndex)
+{
+    this->areaIndex = areaIndex;
+}
+
 void Atom::move()
 {
     switch (this->direction)

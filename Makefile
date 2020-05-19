@@ -1,7 +1,7 @@
 CXX      := g++
 #CXXFLAGS := -Wall -Wextra -Werror -Wno-unused-parameter
 CXXFLAGS := -w -std=c++14
-LDFLAGS  := -L/usr/lib -lstdc++ -lm -pthread -lSDL2 -lSDL2_image
+LDFLAGS  := -L/usr/lib -lstdc++ -lm -pthread -lSDL2 -lSDL2_image -lSDL2_ttf
 BUILD    := ./build
 OBJ_DIR  := $(BUILD)/objects
 APP_DIR  := $(BUILD)/apps

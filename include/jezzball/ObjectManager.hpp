@@ -15,12 +15,13 @@ class ObjectManager
 {
 public:
 
-    ObjectManager(int screenWidth, int screenHeight, LTexture &lTexture);
+    ObjectManager(int boardX, int boardY, int boardWidth, int boardHeight, LTexture &lTexture);
     ~ObjectManager() = default;
 
     void addAtom();
     void addWall(int x, int y, bool isCursorVertical);
-    void update();
+    void updateAtoms();
+    void updateWalls();
     void render();
     std::vector<Wall> getWalls();
     std::vector<Area> getAreas();
@@ -31,8 +32,8 @@ private:
     
     void reassignAtoms();
 
-    int screenWidth;
-    int screenHeight;
+    int boardWidth;
+    int boardHeight;
     bool isCursorVertical;
     bool isAWallBuilding;
     int areaIndex;

@@ -5,6 +5,7 @@
 #include "jezzball/CollisionDirection.hpp"
 
 #include <iostream>
+#include <sstream>
 
 namespace jezzball
 {
@@ -37,8 +38,9 @@ bool Board::init()
         }
 
         //Create window
-        window = SDL_CreateWindow("Jezzball", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, 
-                SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+        window = SDL_CreateWindow("Jezzball", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 
+                //SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+                BOARD_WIDTH, BOARD_HEIGHT, SDL_WINDOW_SHOWN);
         if (window == NULL)
         {
             std::cout << "Window could not be created! SDL Error: " << SDL_GetError() << std::endl;;
@@ -86,14 +88,17 @@ void Board::gameLoop()
     bool quit = false;
     SDL_Event e;
 
-    this->objectManager = std::make_unique<ObjectManager>(SCREEN_WIDTH, SCREEN_HEIGHT, atomTexture);
+    //this->objectManager = std::make_unique<ObjectManager>(BOARD_X, BOARD_Y, BOARD_WIDTH, BOARD_HEIGHT, atomTexture);
+    this->objectManager = std::make_unique<ObjectManager>(SCREEN_X, SCREEN_Y, BOARD_WIDTH, BOARD_HEIGHT, atomTexture);
     this->objectManager->addAtom();
     this->objectManager->addAtom();
 
     while(!quit)
     {
-        SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0x00);
+        SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0xFF);
         SDL_RenderClear(renderer);
+
+        //drawBoard();
         
         //Handle events on queue
         while(SDL_PollEvent(&e) != 0)
@@ -111,25 +116,38 @@ void Board::gameLoop()
                     mousePressed(e.button);
                     break;
                 }
+                case SDL_MOUSEMOTION:
+                {
+                    //mouseMoved(e.motion);
+                    break;
+                }
             }
         }
         
-        this->objectManager->update();
+        this->objectManager->updateAtoms();
+        this->objectManager->updateWalls();
         
         for (Wall wall : this->objectManager->getWalls())
         {
-            SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0x00, 0xFF);
+            //SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, SDL_ALPHA_OPAQUE);
+            SDL_SetRenderDrawColor(renderer, 0xAA, 0xAA, 0x00, SDL_ALPHA_OPAQUE);
             SDL_Rect wallRect;
             wallRect.x = wall.x;
             wallRect.y = wall.y;
             wallRect.w = wall.width;
             wallRect.h = wall.height;
 
-            SDL_RenderDrawRect(renderer, &wallRect);
+            SDL_RenderFillRect(renderer, &wallRect);
         }
         for (Area area : this->objectManager->getAreas())
         {
-            SDL_SetRenderDrawColor(renderer, 0x00, 0xFF, 0xFF, 0xFF);
+            switch (area.index)
+            {
+                case 0:
+                    break;
+
+            }
+            SDL_SetRenderDrawColor(renderer, 0x00, 0xFF, 0xFF, SDL_ALPHA_OPAQUE);
             SDL_Rect areaRect;
             areaRect.x = area.x;
             areaRect.y = area.y;
@@ -146,6 +164,29 @@ void Board::gameLoop()
     }
 }
 
+void Board::drawBoard()
+{
+    SDL_SetRenderDrawColor(renderer, 0xa9, 0xa9, 0xa9, 0xAA);
+    SDL_Rect board;
+    board.x = BOARD_X;
+    board.y = BOARD_Y;
+    board.w = BOARD_WIDTH;
+    board.h = BOARD_HEIGHT;
+
+    SDL_RenderFillRect(renderer, &board);
+
+    SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0xAA);
+
+    for (int i = BOARD_Y; i < BOARD_HEIGHT; i += 20)
+    {
+        SDL_RenderDrawLine(renderer, BOARD_X, i, BOARD_X + BOARD_WIDTH, i);
+    }
+    for (int i = BOARD_X; i < BOARD_WIDTH; i += 20)
+    {
+        SDL_RenderDrawLine(renderer, i, BOARD_Y, i, BOARD_Y + BOARD_HEIGHT);
+    }
+}
+
 bool Board::loadMedia()
 {
     //Loading success flag
@@ -159,6 +200,11 @@ bool Board::loadMedia()
     }
 
     return success;
+}
+
+void Board::mouseMoved(SDL_MouseMotionEvent& e)
+{
+    SDL_Log("%d, %d", e.x, e.y);
 }
 
 void Board::mousePressed(SDL_MouseButtonEvent& b)

@@ -36,15 +36,15 @@ void ObjectManager::addWall(int x, int y, bool isCursorVertical)
         Area wallArea;
         for (Area area : this->areas)
         {
-            if (x >= area.x && y >= area.y && x <= area.width && y <= area.height)
+            std::cout << "area: " << area.toString() << std::endl;
+            if (x >= area.x && y >= area.y && x <= (area.x + area.width) && y <= (area.y + area.height))
             {
                 wallArea = area;
             }
         }
         Wall wall{wallArea, x - (Wall::THICKNESS / 2), y - (Wall::THICKNESS / 2), Wall::THICKNESS, 
             Wall::THICKNESS, true, isCursorVertical};
-        std::cout << "new wall: " << wall.area.index << " " << wall.x << ", " << wall.y << " " 
-            << wall.width << "x" << wall.height <<std::endl;
+        std::cout << "new wall: " << wall.toString() <<std::endl;
         walls.push_back(wall);
         isAWallBuilding = true;
     }
@@ -86,11 +86,11 @@ void ObjectManager::update()
         {
             if (wall.isVertical)
             {
-                //if (wall.height == this->screenHeight)
-                if (wall.height == wall.area.height)
+                if (wall.height >= wall.area.height)
                 {
                     isAWallBuilding = false;
                     wall.isBuilding = false;
+                    wall.height = wall.area.height;
                     splitArea(wall);
                     reassignAtoms();
                     break;
@@ -99,19 +99,21 @@ void ObjectManager::update()
                 {
                     wall.y -= 1;
                 }
-                //if (wall.y + wall.height > this->screenHeight - 2)
                 if (wall.y + wall.height > wall.area.height)
                 {
                     wall.y -= 1;
                 }
                 wall.height += 2;
+
+                //std::cout << wall.toString() << std::endl;
             }
             else
             {
-                if (wall.width == wall.area.width)
+                if (wall.width >= wall.area.width)
                 {
                     isAWallBuilding = false;
                     wall.isBuilding = false;
+                    wall.width = wall.area.width;
                     splitArea(wall);
                     reassignAtoms();
                     break;
@@ -120,11 +122,12 @@ void ObjectManager::update()
                 {
                     wall.x -= 1;
                 }
-                if (wall.x + wall.width > wall.area.width - 2)
+                if (wall.x + wall.width > wall.area.width)
                 {
                     wall.x -= 1;
                 }
                 wall.width += 2;
+                //std::cout << wall.toString() << std::endl;
             }
         }
     }
@@ -137,26 +140,23 @@ void ObjectManager::update()
 
 void ObjectManager::splitArea(Wall wall)
 {
-    std::cout << "SplitArea: area[" << wall.area.index << "]" << std::endl;
+    std::cout << "splitArea()" << std::endl;
     int index = -1;
+    std::cout << "wall: " << wall.toString() << std::endl;
     Area splitArea;
     for (Area area : this->areas)
     {
-        std::cout << "wall: " << wall.area.index << ": " << wall.x << ", " << wall.y << " " 
-                << wall.width << "x" << wall.height << std::endl;
-        std::cout << "area: " << area.index << ": " << area.x << ", " << area.y << " " 
-                << area.width << "x" << area.height << std::endl;
+        std::cout << "area: " << area.toString() << std::endl;
         if (wall.x >= area.x && wall.y >= area.y && (wall.height == area.height || wall.width == area.width))
         {
+            std::cout << "wall is inside area" << std::endl;
             index = area.index;
             splitArea = area;
             break;
         }
         index++;
     }
-    std::cout << "splitArea" << std::endl;
-    std::cout << splitArea.index << ": " << splitArea.x << ", " << splitArea.y << " " 
-        << splitArea.width << "x" << splitArea.height << std::endl;
+    std::cout << "splitArea: " << splitArea.toString() << std::endl;
 
     this->areas.erase(this->areas.begin() + index);
 
@@ -173,15 +173,14 @@ void ObjectManager::splitArea(Wall wall)
         this->areas.push_back(Area{index, splitArea.x, splitArea.y,
                 splitArea.width, wall.y - splitArea.y});
         areaIndex++;
-        this->areas.push_back(Area{areaIndex, wall.x + wall.height, splitArea.y,
+        this->areas.push_back(Area{areaIndex, wall.x, wall.y + wall.height,
                 splitArea.width, splitArea.height - (wall.y + wall.height)});
     }
     
     std::cout << "All Areas" << std::endl;
     for (Area area : this->areas)
     {
-        std::cout << area.index << ": " << area.x << ", " << area.y << " " << 
-            area.width << "x" << area.height << std::endl;
+        std::cout << "areas " << area.toString() << std::endl;
     }
 
     std::cout << std::endl;
@@ -189,23 +188,23 @@ void ObjectManager::splitArea(Wall wall)
 
 void ObjectManager::reassignAtoms()
 {
-    std::cout << "reassignAtoms" << std::endl;
+    //std::cout << "reassignAtoms" << std::endl;
     for (Atom &atom : atoms)
     {
         Point p = atom.getPoint();
-        std::cout << "Atom [old]: " << atom.getAreaIndex() << ": " << p.x << ", " << p.y << std::endl;
+        //std::cout << "Atom [old]: " << atom.getAreaIndex() << ": " << p.x << ", " << p.y << std::endl;
         for (Area area : this->areas)
         {
-            std::cout << "Area: " << area.index << ": " << area.x << ", " << area.y << " " << 
-                (area.x + area.width) << "x" << (area.y + area.height) << std::endl;
+            //std::cout << "Area: " << area.index << ": " << area.x << ", " << area.y << " " << 
+            //    (area.x + area.width) << "x" << (area.y + area.height) << //std::endl;
             if (p.x >= area.x && p.y >= area.y && p.x <= (area.x + area.width) && p.y <= (area.y + area.height))
             {
                 atom.setAreaIndex(area.index);
-                std::cout << "Atom [new]: " << atom.getAreaIndex() << ": " << p.x << ", " << p.y << std::endl;
+                //std::cout << "Atom [new]: " << atom.getAreaIndex() << ": " << p.x << ", " << p.y << std::endl;
             }
         }
     }
-    std::cout << std::endl;
+    //std::cout << std::endl;
 }
 
 void ObjectManager::render()
@@ -220,6 +219,11 @@ void ObjectManager::render()
 std::vector<Wall> ObjectManager::getWalls()
 {
     return walls;
+}
+
+std::vector<Area> ObjectManager::getAreas()
+{
+    return areas;
 }
 
 } // namespace jezzball

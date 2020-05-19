@@ -127,6 +127,17 @@ void Board::gameLoop()
 
             SDL_RenderDrawRect(renderer, &wallRect);
         }
+        for (Area area : this->objectManager->getAreas())
+        {
+            SDL_SetRenderDrawColor(renderer, 0x00, 0xFF, 0xFF, 0xFF);
+            SDL_Rect areaRect;
+            areaRect.x = area.x;
+            areaRect.y = area.y;
+            areaRect.w = area.width;
+            areaRect.h = area.height;
+
+            SDL_RenderDrawRect(renderer, &areaRect);
+        }
 
         this->objectManager->render();
 

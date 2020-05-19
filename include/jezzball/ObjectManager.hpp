@@ -23,6 +23,8 @@ public:
     void update();
     void render();
     std::vector<Wall> getWalls();
+    std::vector<Area> getAreas();
+
     void splitArea(Wall wall);
 
 private:

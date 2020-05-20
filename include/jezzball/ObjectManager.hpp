@@ -31,12 +31,17 @@ public:
 private:
     
     void reassignAtoms();
+    void calculateCleared();
 
+    int boardX;
+    int boardY;
     int boardWidth;
     int boardHeight;
+    double boardArea;
     bool isCursorVertical;
     bool isAWallBuilding;
     int areaIndex;
+    double percentCleared;
     LTexture lTexture;
     std::vector<Atom> atoms;
     std::vector<Wall> walls;

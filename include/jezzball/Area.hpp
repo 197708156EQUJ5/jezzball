@@ -14,6 +14,7 @@ struct Area
     int y;
     int width;
     int height;
+    bool isEmpty = false;
     
     std::string toString()
     {

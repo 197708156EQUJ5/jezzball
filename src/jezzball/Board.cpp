@@ -95,7 +95,7 @@ void Board::gameLoop()
 
     while(!quit)
     {
-        SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0xFF);
+        SDL_SetRenderDrawColor(renderer, 0xa9, 0xa9, 0xa9, 0xFF);
         SDL_RenderClear(renderer);
 
         //drawBoard();
@@ -129,8 +129,7 @@ void Board::gameLoop()
         
         for (Wall wall : this->objectManager->getWalls())
         {
-            //SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, SDL_ALPHA_OPAQUE);
-            SDL_SetRenderDrawColor(renderer, 0xAA, 0xAA, 0x00, SDL_ALPHA_OPAQUE);
+            SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, SDL_ALPHA_OPAQUE);
             SDL_Rect wallRect;
             wallRect.x = wall.x;
             wallRect.y = wall.y;
@@ -141,20 +140,22 @@ void Board::gameLoop()
         }
         for (Area area : this->objectManager->getAreas())
         {
-            switch (area.index)
-            {
-                case 0:
-                    break;
-
-            }
-            SDL_SetRenderDrawColor(renderer, 0x00, 0xFF, 0xFF, SDL_ALPHA_OPAQUE);
             SDL_Rect areaRect;
             areaRect.x = area.x;
             areaRect.y = area.y;
             areaRect.w = area.width;
             areaRect.h = area.height;
 
-            SDL_RenderDrawRect(renderer, &areaRect);
+            if (area.isEmpty)
+            {
+                SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, SDL_ALPHA_OPAQUE);
+                SDL_RenderFillRect(renderer, &areaRect);
+            }
+            else
+            {
+                SDL_SetRenderDrawColor(renderer, 0xFF, 0x00, 0x00, SDL_ALPHA_TRANSPARENT);
+                SDL_RenderDrawRect(renderer, &areaRect);
+            }
         }
 
         this->objectManager->render();

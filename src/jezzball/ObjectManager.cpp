@@ -10,6 +10,8 @@ namespace jezzball
 {
 
 ObjectManager::ObjectManager(int boardX, int boardY, int boardWidth, int boardHeight, LTexture &lTexture) :
+    boardX(boardX),
+    boardY(boardY),
     boardWidth(boardWidth),
     boardHeight(boardHeight),
     isCursorVertical(true),
@@ -18,6 +20,9 @@ ObjectManager::ObjectManager(int boardX, int boardY, int boardWidth, int boardHe
     lTexture(lTexture)
 {
     this->areas.push_back(Area{areaIndex, boardX, boardY, boardWidth, boardHeight});
+    this->boardArea = boardWidth * boardHeight;
+    this->percentCleared = ((boardWidth * boardHeight) / this->boardArea) * 100;
+    std::cout << "% Cleared: " << (int) this->percentCleared << std::endl;
 }
 
 void ObjectManager::addAtom()
@@ -241,6 +246,37 @@ void ObjectManager::reassignAtoms()
         }
     }
     //std::cout << std::endl;
+    calculateCleared();
+}
+
+void ObjectManager::calculateCleared()
+{
+    double percentCleared = 100;
+    for (Wall wall : this->walls)
+    {
+        percentCleared -= ((wall.width * wall.height) / this->boardArea) * 100.0;
+    }
+
+    for (Area &area : this->areas)
+    {
+        bool atomsFound = false;
+        for (Atom atom : this->atoms)
+        {
+            if (atom.getAreaIndex() == area.index)
+            {
+                atomsFound = true;
+                break;
+            }
+        }
+        area.isEmpty = !atomsFound;
+        if (area.isEmpty)
+        {
+            percentCleared -= ((area.width * area.height) / this->boardArea) * 100.0;
+        }
+    }
+
+    this->percentCleared = percentCleared;
+    std::cout << "% Cleared: " << (int) this->percentCleared << std::endl;
 }
 
 void ObjectManager::render()

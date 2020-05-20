@@ -4,6 +4,7 @@
 
 #include <sstream>
 #include <string>
+#include <iomanip>
 
 namespace jezzball
 {
@@ -23,9 +24,9 @@ struct Wall
     std::string toString()
     {
         std::stringstream ss;
-        ss << area.index << ": (" << x << "," << y << ") (" 
-            << (x + width) << "," << (y + height) << ")"
-            << " width: " << width << " height: " << height
+        ss << area.index << ": (" << std::setw(3) << x << "," << std::setw(3) << y << ") (" 
+            << std::setw(3) << (x + width) << "," << std::setw(3) << (y + height) << ")"
+            << " width: " << std::setw(3) << width << " height: " << std::setw(3) << height
             << " isBuilding? " << std::boolalpha << isBuilding 
             << " isVertical? " << isVertical;
         return ss.str();

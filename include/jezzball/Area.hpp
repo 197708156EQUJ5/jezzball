@@ -2,6 +2,7 @@
 
 #include <sstream>
 #include <string>
+#include <iomanip>
 
 namespace jezzball
 {
@@ -17,9 +18,9 @@ struct Area
     std::string toString()
     {
         std::stringstream ss;
-        ss << index << ": (" << x << "," << y << ") (" 
-            << (x + width) << "," << (y + height) << ")"
-            << " width: " << width << " height: " << height;
+        ss << index << ": (" << std::setw(3) << x << "," << std::setw(3) << y << ") (" 
+            << std::setw(3) << (x + width) << "," << std::setw(3) << (y + height) << ")"
+            << " width: " << std::setw(3) << width << " height: " << std::setw(3) << height;
 
         return ss.str();
     }

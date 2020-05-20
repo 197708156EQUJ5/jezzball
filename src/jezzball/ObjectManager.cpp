@@ -93,6 +93,7 @@ void ObjectManager::updateWalls()
                 {
                     isAWallBuilding = false;
                     wall.isBuilding = false;
+                    wall.y = wall.area.y;
                     wall.height = wall.area.height;
                     splitArea(wall);
                     reassignAtoms();
@@ -120,6 +121,7 @@ void ObjectManager::updateWalls()
                 {
                     isAWallBuilding = false;
                     wall.isBuilding = false;
+                    wall.x = wall.area.x;
                     wall.width = wall.area.width;
                     splitArea(wall);
                     reassignAtoms();
@@ -155,6 +157,7 @@ void ObjectManager::splitArea(Wall wall)
     std::cout << "splitArea()" << std::endl;
     int deleteIndex = 0;
     int originalAreaIndex = 0;
+    bool isFound = false;
     std::cout << "wall: " << wall.toString() << std::endl;
     Area splitArea;
     for (Area area : this->areas)
@@ -165,6 +168,7 @@ void ObjectManager::splitArea(Wall wall)
             std::cout << "wall is inside area" << std::endl;
             originalAreaIndex = area.index;
             splitArea = area;
+            isFound = true;
             break;
         }
         deleteIndex++;
@@ -177,6 +181,11 @@ void ObjectManager::splitArea(Wall wall)
     {
         std::cout << "areas " << area.toString() << std::endl;
     }
+    if (!isFound)
+    {
+        return;
+    }
+    
     this->areas.erase(this->areas.begin() + deleteIndex);
     std::cout << " after erase areas size(): " << areas.size() << std::endl;
     for (Area area : this->areas)
@@ -201,6 +210,8 @@ void ObjectManager::splitArea(Wall wall)
                 splitArea.width, splitArea.height - (wall.y + wall.height)});
     }
     
+    std::cout << "Two new areas created: " << originalAreaIndex 
+        << " --> " << originalAreaIndex << " & " << areaIndex << std::endl;
     std::cout << "All Areas" << std::endl;
     for (Area area : this->areas)
     {
